@@ -1,17 +1,25 @@
 import numpy as np
-from utils import softmax
+
+
+def softmax(x):
+
+    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
 
 def scaled_dot_product_attention(Q, K, V, mask=None):
+    
+    d_k = Q.shape[-1]
 
-    dk = Q.shape[-1]
+    scores = Q @ K.T
 
-    scores = Q @ K.T / np.sqrt(dk)
+    scores = scores / np.sqrt(d_k)
 
     if mask is not None:
-        scores += mask
+        scores = scores + mask
 
-    weights = softmax(scores)
+    attention_weights = softmax(scores)
 
-    output = weights @ V
+    output = attention_weights @ V
 
-    return output
+    return output, attention_weights
