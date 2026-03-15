@@ -2,7 +2,7 @@
 
 Projeto desenvolvido para o **Laboratório 4 da disciplina Tópicos em Inteligência Artificial**.
 
-O objetivo deste trabalho é implementar a arquitetura completa do **Transformer Encoder-Decoder** utilizando apenas **Python e NumPy**, sem o uso de bibliotecas de deep learning como PyTorch ou TensorFlow.
+O objetivo deste trabalho é implementar a arquitetura completa do **Transformer Encoder-Decoder** utilizando apenas **Python e NumPy**
 
 O projeto integra todos os componentes implementados nos laboratórios anteriores e executa uma simulação de geração de sequência utilizando **inferência auto-regressiva**.
 
