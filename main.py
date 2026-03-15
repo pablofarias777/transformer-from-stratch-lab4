@@ -1,70 +1,66 @@
 import numpy as np
-
-from attention import scaled_dot_product_attention
-from ffn import FeedForward
-from add_norm import AddNorm
-from encoder import EncoderBlock
+from transformer import Transformer
 
 
-def test_encoder():
+def autoregressive_inference():
 
-    print("\n--- Testing Encoder ---")
+    print("Running Transformer Inference")
 
-    x = np.random.rand(4, 512)
+    d_model = 512
+    vocab_size = 20
+    max_steps = 10
 
-    encoder = EncoderBlock()
+    # vocabulário simples para simulação
+    vocab = {
+        "<START>": 0,
+        "<EOS>": 1,
+        "Thinking": 2,
+        "Machines": 3
+    }
 
-    output = encoder.forward(x)
+    inv_vocab = {v: k for k, v in vocab.items()}
 
-    print("Encoder output shape:", output.shape)
+    # simular entrada do encoder ("Thinking Machines")
+    seq_len = 2
+    encoder_input = np.random.rand(seq_len, d_model)
 
+    # criar modelo
+    model = Transformer(d_model=d_model, vocab_size=vocab_size)
 
-def test_attention():
+    # decoder começa com <START>
+    decoder_input = np.random.rand(1, d_model)
 
-    print("\n--- Testing Attention ---")
+    generated_tokens = ["<START>"]
 
-    Q = np.random.rand(4, 512)
-    K = np.random.rand(4, 512)
-    V = np.random.rand(4, 512)
+    for step in range(max_steps):
 
-    output, attention = scaled_dot_product_attention(Q, K, V)
+        probs = model.forward(encoder_input, decoder_input)
 
-    print("Attention output shape:", output.shape)
-    print("Attention weights shape:", attention.shape)
+        # pegar última previsão
+        last_token_probs = probs[-1]
 
+        predicted_token = np.argmax(last_token_probs)
 
-def test_ffn():
+        # converter para palavra (se existir)
+        token_word = inv_vocab.get(predicted_token, f"token_{predicted_token}")
 
-    print("\n--- Testing Feed Forward ---")
+        generated_tokens.append(token_word)
 
-    x = np.random.rand(4, 512)
+        print(f"Step {step+1}: predicted -> {token_word}")
 
-    ffn = FeedForward()
+        # parar se gerar <EOS>
+        if token_word == "<EOS>":
+            break
 
-    output = ffn.forward(x)
+        # criar embedding aleatório para novo token
+        new_embedding = np.random.rand(1, d_model)
 
-    print("FFN output shape:", output.shape)
+        # concatenar ao decoder input
+        decoder_input = np.vstack([decoder_input, new_embedding])
 
-
-def test_add_norm():
-
-    print("\n--- Testing Add & Norm ---")
-
-    x = np.random.rand(4, 512)
-    sublayer_output = np.random.rand(4, 512)
-
-    add_norm = AddNorm()
-
-    output = add_norm.forward(x, sublayer_output)
-
-    print("AddNorm output shape:", output.shape)
+    print("\nGenerated sequence:")
+    print(generated_tokens)
 
 
 if __name__ == "__main__":
-
-    print("Running Transformer component tests")
-
-    test_attention()
-    test_ffn()
-    test_add_norm()
-    test_encoder()
+    autoregressive_inference()
