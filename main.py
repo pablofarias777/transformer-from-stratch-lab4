@@ -3,6 +3,20 @@ import numpy as np
 from attention import scaled_dot_product_attention
 from ffn import FeedForward
 from add_norm import AddNorm
+from encoder import EncoderBlock
+
+
+def test_encoder():
+
+    print("\n--- Testing Encoder ---")
+
+    x = np.random.rand(4, 512)
+
+    encoder = EncoderBlock()
+
+    output = encoder.forward(x)
+
+    print("Encoder output shape:", output.shape)
 
 
 def test_attention():
@@ -53,3 +67,4 @@ if __name__ == "__main__":
     test_attention()
     test_ffn()
     test_add_norm()
+    test_encoder()

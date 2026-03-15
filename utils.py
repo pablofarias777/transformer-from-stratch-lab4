@@ -1,12 +1,11 @@
 import numpy as np
 
-def softmax(x):
-    e_x = np.exp(x - np.max(x))
-    return e_x / e_x.sum(axis=-1, keepdims=True)
 
-def layer_norm(x, eps=1e-6):
+def create_causal_mask(seq_len):
+  
 
-    mean = np.mean(x, axis=-1, keepdims=True)
-    var = np.var(x, axis=-1, keepdims=True)
+    mask = np.triu(np.ones((seq_len, seq_len)), k=1)
 
-    return (x - mean) / np.sqrt(var + eps)
+    mask = mask * -1e9
+
+    return mask
