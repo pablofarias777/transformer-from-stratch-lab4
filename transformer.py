@@ -10,8 +10,6 @@ class Transformer:
 
         self.encoder = EncoderBlock(d_model, d_ff)
         self.decoder = DecoderBlock(d_model, d_ff)
-
-        # projeção final para o vocabulário
         self.Wo = np.random.randn(d_model, vocab_size) * np.sqrt(2 / d_model)
         self.bo = np.zeros((1, vocab_size))
 
@@ -24,16 +22,12 @@ class Transformer:
 
     def forward(self, encoder_input, decoder_input):
 
-        # 1️⃣ rodar encoder
         encoder_output = self.encoder.forward(encoder_input)
 
-        # 2️⃣ rodar decoder
         decoder_output = self.decoder.forward(decoder_input, encoder_output)
 
-        # 3️⃣ projeção para vocabulário
         logits = decoder_output @ self.Wo + self.bo
 
-        # 4️⃣ softmax
         probs = self.softmax(logits)
 
         return probs
